@@ -18,4 +18,10 @@ export default {
   },
   primary: '#1063FD',
   gray: '#6E6E73',
+  background: '#EFEEF6',
+  lightGray: '#DCDCE2',
+  green: '#4FEE57',
+  lightGreen: '#DBFFCB',
+  red: '#EF0827',
+  yellow: '#FCC70B',
 };

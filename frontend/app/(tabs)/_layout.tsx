@@ -1,46 +1,61 @@
-// app/(tabs)/_layout.tsx
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import React from 'react';
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
-
-import Colors from '../../constants/Colors';
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
+        tabBarStyle: {
+          backgroundColor: '#1a237e',
+        },
+        tabBarActiveTintColor: '#ffffff',
+        tabBarInactiveTintColor: '#b0bec5',
+        headerStyle: {
+          backgroundColor: '#1a237e',
+        },
+        headerTintColor: '#ffffff',
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          title: 'Dashboard',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="shield" size={size} color={color} />
+          ),
         }}
       />
+      
       <Tabs.Screen
-        name="chat"
+        name="ultra_secure_chat"
         options={{
           title: 'Chat',
-          tabBarIcon: ({ color }) => <TabBarIcon name="comments" color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="contact_management"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Contacts',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people" size={size} color={color} />
+          ),
         }}
       />
+
+      <Tabs.Screen
+        name="policy_control_center"
+        options={{
+          title: 'Policy',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="key" size={size} color={color} />
+          ),
+        }}
+      />    
+      
     </Tabs>
   );
 }

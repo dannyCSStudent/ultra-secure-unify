@@ -1,76 +1,99 @@
+// app/index.tsx
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Linking } from 'react-native';
-import Colors from '@/constants/Colors';
-import { Link } from 'expo-router';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 
+export default function WelcomeScreen() {
+  const router = useRouter();
 
-
-const WelcomeScreen = () => {
-  const openLink = () => {
-    Linking.openURL('https://galaxies.dev');
+  const handleGetStarted = () => {
+    router.push('/otp');
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require('@/assets/images/welcome.png')} style={styles.welcome} />
-      <Text style={styles.headline}>Welcome to WhatsApp Clone</Text>
-      <Text style={styles.description}>
-        Read our{' '}
-        <Text style={styles.link} onPress={openLink}>
-          Privacy Policy
-        </Text>
-        . {'Tap "Agree & Continue" to accept the '}
-        <Text style={styles.link} onPress={openLink}>
-          Terms of Service
-        </Text>
-        .
-      </Text>
-      {/* <Link href={'/otp'} replace asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Agree & Continue</Text>
+    <LinearGradient
+      colors={['#1a237e', '#283593', '#3949ab']}
+      style={styles.container}
+    >
+      <StatusBar style="light" />
+      <View style={styles.content}>
+        <Text style={styles.title}>Welcome to UltraSecureUnify</Text>
+        <Text style={styles.subtitle}>Ultra-secure communication</Text>
+        <Text style={styles.subtitle}>for the privacy-conscious</Text>
+        
+        <Text style={styles.icon}>🔒</Text>
+        
+        <Pressable style={styles.button} onPress={handleGetStarted}>
+          <Text style={styles.buttonText}>Get Started</Text>
         </Pressable>
-      </Link> */}
-    </View>
+
+        <View style={styles.legalContainer}>
+          <Text style={styles.legalText}>By continuing, you agree to our</Text>
+          <Link href="/terms-of-service" style={styles.legalLink}>
+            Terms of Service
+          </Link>
+          <Text style={styles.legalText}>and</Text>
+          <Link href="/privacy-policy" style={styles.legalLink}>
+            Privacy Policy
+          </Link>
+        </View>
+      </View>
+    </LinearGradient>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
   },
-  welcome: {
-    width: '100%',
-    height: 300,
-    borderRadius: 60,
-    marginBottom: 80,
-  },
-  headline: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 20,
-  },
-  description: {
-    fontSize: 14,
+    color: '#ffffff',
+    marginBottom: 10,
     textAlign: 'center',
-    marginBottom: 80,
-    color: Colors.gray,
   },
-  link: {
-    color: Colors.primary,
+  subtitle: {
+    fontSize: 16,
+    color: '#e0e0e0',
+    textAlign: 'center',
+  },
+  icon: {
+    fontSize: 72,
+    marginVertical: 40,
   },
   button: {
-    width: '100%',
-    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    marginTop: 20,
+    marginBottom: 40,
   },
   buttonText: {
-    color: Colors.primary,
-    fontSize: 22,
-    fontWeight: '500',
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  legalContainer: {
+    alignItems: 'center',
+  },
+  legalText: {
+    color: '#e0e0e0',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  legalLink: {
+    color: '#4FC3F7',
+    fontSize: 14,
+    marginBottom: 5,
   },
 });
-
-export default WelcomeScreen;
