@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import { toggleMute, toggleVideo, verifyCall } from '../../store/slices/callSlice';
 
-export default function SecureCallScreen() {
-  const [isMuted, setIsMuted] = useState(false);
-  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
-  const [isVideoOn, setIsVideoOn] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
-  const router = useRouter();
-  const { contactName, isVideoCall } = useLocalSearchParams();
-
-  const toggleMute = () => setIsMuted(!isMuted);
-  const toggleSpeaker = () => setIsSpeakerOn(!isSpeakerOn);
-  const toggleVideo = () => setIsVideoOn(!isVideoOn);
-  const verifyCall = () => setIsVerified(true);
+export default function VerificationVideoCallScreen() {
+ const router = useRouter();
+  const dispatch = useDispatch();
+  const { isMuted, isVideoOn, isVerified } = useSelector((state: RootState) => state.call);
 
   return (
     <LinearGradient
@@ -25,28 +20,22 @@ export default function SecureCallScreen() {
     >
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={styles.title}>{isVideoCall === 'true' ? 'Video Call' : 'Audio Call'}</Text>
+        <Text style={styles.title}>Verification Video Call</Text>
       </View>
-      {isVideoCall === 'true' && isVideoOn ? (
-        <View style={styles.videoContainer}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/240x180' }}
-            style={styles.mainVideo}
-          />
-          <View style={styles.smallVideoContainer}>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/110x110' }}
-              style={styles.smallVideo}
-            />
-          </View>
-        </View>
-      ) : (
-        <View style={styles.audioCallContainer}>
-          <Ionicons name="person-circle" size={120} color="#ffffff" />
-          <Text style={styles.contactName}>{contactName}</Text>
-          <Text style={styles.callStatus}>Secure call in progress...</Text>
-        </View>
-      )}
+      <View style={styles.mainVideoContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/240x180' }}
+          style={styles.mainVideo}
+        />
+        <Text style={styles.mainVideoText}>Alice</Text>
+      </View>
+      <View style={styles.smallVideoContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/110x110' }}
+          style={styles.smallVideo}
+        />
+        <Text style={styles.smallVideoText}>You</Text>
+      </View>
       <View style={styles.controlsContainer}>
         <View style={styles.controlBox}>
           <Text style={styles.controlTitle}>QR Verification</Text>
@@ -63,15 +52,9 @@ export default function SecureCallScreen() {
         <Pressable style={styles.circleButton} onPress={toggleMute}>
           <Ionicons name={isMuted ? "mic-off" : "mic"} size={24} color="#ffffff" />
         </Pressable>
-        {isVideoCall === 'true' ? (
-          <Pressable style={styles.circleButton} onPress={toggleVideo}>
-            <Ionicons name={isVideoOn ? "videocam" : "videocam-off"} size={24} color="#ffffff" />
-          </Pressable>
-        ) : (
-          <Pressable style={styles.circleButton} onPress={toggleSpeaker}>
-            <Ionicons name={isSpeakerOn ? "volume-high" : "volume-medium"} size={24} color="#ffffff" />
-          </Pressable>
-        )}
+        <Pressable style={styles.circleButton} onPress={toggleVideo}>
+          <Ionicons name={isVideoOn ? "videocam" : "videocam-off"} size={24} color="#ffffff" />
+        </Pressable>
         <Pressable style={[styles.circleButton, styles.endCallButton]} onPress={() => router.back()}>
           <Ionicons name="call" size={24} color="#ffffff" />
         </Pressable>
@@ -98,7 +81,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
-  videoContainer: {
+  mainVideoContainer: {
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -107,29 +90,26 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 10,
   },
+  mainVideoText: {
+    color: '#ffffff',
+    marginTop: 10,
+    fontSize: 18,
+  },
   smallVideoContainer: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 100,
+    right: 20,
+    alignItems: 'center',
   },
   smallVideo: {
     width: 110,
     height: 110,
     borderRadius: 10,
   },
-  audioCallContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  contactName: {
+  smallVideoText: {
     color: '#ffffff',
-    fontSize: 24,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  callStatus: {
-    color: '#ffffff',
-    fontSize: 16,
+    marginTop: 5,
+    fontSize: 14,
   },
   controlsContainer: {
     flexDirection: 'row',

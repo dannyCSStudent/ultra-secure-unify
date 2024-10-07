@@ -4,12 +4,17 @@ import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { useDispatch } from 'react-redux';
+import { setPhoneNumber } from '../../store/slices/securitySlice';
+// decide to use Redux if the state (like the phone number) needs to be accessed globally across multiple screens or components. If not, managing it locally with useState in individual screens is sufficient.
 
 export default function PhoneNumberEntryScreen() {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumberLocal] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSendVerificationCode = () => {
+    dispatch(setPhoneNumber(phoneNumber));
     // Here you would typically send the verification code to the phone number
     // For now, we'll just navigate to the next screen
     
@@ -30,7 +35,7 @@ export default function PhoneNumberEntryScreen() {
           placeholder="+1 (___) ___-____"
           placeholderTextColor="#a0a0a0"
           value={phoneNumber}
-          onChangeText={setPhoneNumber}
+          onChangeText={setPhoneNumberLocal}
           keyboardType="phone-pad"
         />
         

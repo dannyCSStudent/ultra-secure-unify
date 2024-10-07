@@ -4,12 +4,18 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store'; // Adjust path accordingly
+import { togglePrivacyShield } from '../../store/slices/privacySlice'; 
 
 export default function PrivacyControlCenterScreen() {
-  const [privacyShield, setPrivacyShield] = useState(true);
+  const dispatch = useDispatch();
+  const privacyShield = useSelector((state: RootState) => state.privacy.privacyShield);
   const router = useRouter();
 
-  const togglePrivacyShield = () => setPrivacyShield(!privacyShield);
+  const handleTogglePrivacyShield = () => {
+    dispatch(togglePrivacyShield());
+  };
 
   return (
     <LinearGradient
@@ -54,7 +60,7 @@ export default function PrivacyControlCenterScreen() {
           <Text style={styles.footerText}>Privacy Shield:</Text>
           <Switch
             value={privacyShield}
-            onValueChange={togglePrivacyShield}
+            onValueChange={handleTogglePrivacyShield}
             trackColor={{ false: "#767577", true: "#4CAF50" }}
             thumbColor={privacyShield ? "#f4f3f4" : "#f4f3f4"}
           />

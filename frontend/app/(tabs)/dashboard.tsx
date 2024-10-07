@@ -4,15 +4,26 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import { logout } from '../../store/slices/authSlice';
 
 export default function SecurityDashboardScreen() {
   const [torEnabled, setTorEnabled] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+
 
   const handleRunSecurityCheck = () => {
     // Implement security check logic here
     console.log('Running security check...');
    
+  };
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    router.replace('/');
   };
 
   return (
@@ -23,7 +34,7 @@ export default function SecurityDashboardScreen() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Security Dashboard</Text>
-        
+        <Text style={styles.welcomeText}>Welcome, {user?.username || 'User'}!</Text>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Threat Monitor</Text>
           <View style={styles.cardContent}>
@@ -67,6 +78,9 @@ export default function SecurityDashboardScreen() {
         
         <Pressable style={styles.runCheckButton} onPress={handleRunSecurityCheck}>
           <Text style={styles.runCheckButtonText}>Run Security Check</Text>
+        </Pressable>
+        <Pressable style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>
@@ -148,6 +162,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   runCheckButtonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  welcomeText: {
+    color: '#ffffff',
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#ff6b6b',
+    borderRadius: 25,
+    paddingVertical: 15,
+    marginTop: 20,
+  },
+  logoutButtonText: {
     color: '#ffffff',
     textAlign: 'center',
     fontSize: 18,

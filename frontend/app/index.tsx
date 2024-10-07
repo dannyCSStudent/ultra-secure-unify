@@ -9,7 +9,7 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    router.push('/otp');
+    router.push('../screens/otp');
   };
 
   return (

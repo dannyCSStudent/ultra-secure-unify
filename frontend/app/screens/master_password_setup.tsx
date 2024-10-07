@@ -4,18 +4,21 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import { setMasterPassword, toggleBiometricLogin } from '../../store/slices/securitySlice';
 
 export default function MasterPasswordSetupScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [enableBiometric, setEnableBiometric] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { enableBiometric } = useSelector((state: RootState) => state.security);
 
   const handleSetPassword = () => {
-    // Here you would typically validate the password, ensure it matches the confirmation,
-    // and then set it securely. For now, we'll just navigate to the next screen (e.g., dashboard)
     if (password === confirmPassword && password.length >= 8) {
+      dispatch(setMasterPassword(password));
       router.push('/(tabs)/dashboard');
     } else {
       // Show an error message (you might want to add state for this and render it)
@@ -23,6 +26,7 @@ export default function MasterPasswordSetupScreen() {
     }
   };
 
+ 
   return (
     <LinearGradient
       colors={['#1a237e', '#283593', '#3949ab']}
@@ -71,9 +75,12 @@ export default function MasterPasswordSetupScreen() {
             trackColor={{ false: "#767577", true: "#81b0ff" }}
             thumbColor={enableBiometric ? "#f5dd4b" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setEnableBiometric(!enableBiometric)}
+            onValueChange={(value) => {
+              dispatch(toggleBiometricLogin(value))}
+            }
             value={enableBiometric}
           />
+
         </View>
       </View>
     </LinearGradient>

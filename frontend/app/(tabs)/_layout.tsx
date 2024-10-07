@@ -20,7 +20,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
+          title: 'Control',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="shield" size={size} color={color} />
           ),
@@ -52,6 +52,15 @@ export default function TabLayout() {
           title: 'Policy',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="key" size={size} color={color} />
+          ),
+        }}
+      />    
+      <Tabs.Screen
+        name="emergency_actions"
+        options={{
+          title: 'Actions',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="flame" size={size} color={color} />
           ),
         }}
       />    

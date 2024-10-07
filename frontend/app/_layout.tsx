@@ -1,6 +1,8 @@
 // app/_layout.tsx
 import { useEffect, useState } from 'react';
 import { Slot, useRouter, useSegments, Stack, Link } from 'expo-router';
+import { Provider } from 'react-redux';
+import { store } from '../store';
 import { Pressable, View } from 'react-native';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,6 +34,7 @@ export default function RootLayout() {
   const { isAuthenticated, setIsAuthenticated } = useProtectedRoute();
 
   return (
+    <Provider store={store}>
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
@@ -48,5 +51,6 @@ export default function RootLayout() {
       />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
+    </Provider>
   );
 }

@@ -14,7 +14,7 @@ export default function PhoneVerificationScreen() {
     // For now, we'll just simulate a successful verification
     console.log('Verification code:', verificationCode);
     // Navigate to the next screen (e.g., dashboard or profile setup)
-    router.push('/generate_secure_id');
+    router.push('../screens/generate_secure_id');
   };
 
   const handleResendCode = () => {

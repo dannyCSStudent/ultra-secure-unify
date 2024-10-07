@@ -14,7 +14,7 @@ export default function GenerateSecureIDScreen() {
     const timer = setTimeout(() => {
       setIsGenerating(false);
       // Navigate to the next screen (e.g., master password setup)
-      router.push('/master_password_setup');
+      router.push('../screens/master_password_setup');
     }, 5000); // Adjust the time as needed
 
     return () => clearTimeout(timer);

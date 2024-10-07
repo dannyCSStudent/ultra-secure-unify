@@ -4,32 +4,37 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-}
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import { addMessage } from '../../store/slices/chatSlice';
+import { v4 as uuidv4 } from 'uuid'; // For unique message IDs
 
 export default function UltraSecureChatScreen() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', sender: 'Alice', text: "Hey, how's it going?" },
-    { id: '2', sender: 'You', text: "Good, thanks!" },
-    { id: '3', sender: 'Alice', text: "Shall we video call?" },
-  ]);
-  const [inputText, setInputText] = useState('');
+  const dispatch = useDispatch();
   const router = useRouter();
 
+  // Access the messages from the Redux store
+  const messages = useSelector((state: RootState) => state.chat.messages);
+  const activeChat = useSelector((state: RootState) => state.chat.activeChat); // If needed
+  const [inputText, setInputText] = useState('');
+
+  // Dispatch action to add a new message
   const handleSend = () => {
     if (inputText.trim()) {
-      setMessages([...messages, { id: Date.now().toString(), sender: 'You', text: inputText.trim() }]);
+      const newMessage = {
+        id: uuidv4(),  // Generating a unique ID
+        senderId: 'you',  // This could be dynamic based on the current user
+        content: inputText.trim(),
+        timestamp: Date.now(),
+      };
+      dispatch(addMessage(newMessage));
       setInputText('');
     }
   };
 
-  const renderMessage = ({ item }: { item: Message }) => (
-    <View style={[styles.messageBubble, item.sender === 'You' ? styles.yourMessage : styles.theirMessage]}>
-      <Text style={styles.messageText}>{item.text}</Text>
+  const renderMessage = ({ item }: { item: { id: string, senderId: string, content: string } }) => (
+    <View style={[styles.messageBubble, item.senderId === 'you' ? styles.yourMessage : styles.theirMessage]}>
+      <Text style={styles.messageText}>{item.content}</Text>
     </View>
   );
 
@@ -45,10 +50,10 @@ export default function UltraSecureChatScreen() {
       <View style={styles.contactBar}>
         <Text style={styles.contactName}>Alice (Online)</Text>
         <View style={styles.iconContainer}>
-          <Pressable onPress={() => router.push('/secure_phone_call')}>
+          <Pressable onPress={() => router.push('../screens/secure_phone_call')}>
             <Ionicons name="call" size={24} color="#ffffff" />
           </Pressable>
-          <Pressable onPress={() => router.push('/verification_video_call')} style={styles.videoIcon}>
+          <Pressable onPress={() => router.push('../screens/verification_video_call')} style={styles.videoIcon}>
             <Ionicons name="videocam" size={24} color="#ffffff" />
           </Pressable>
         </View>
