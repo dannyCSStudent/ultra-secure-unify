@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { addContact, verifyContact } from '../../store/slices/contactSlice';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+
 
 interface Contact {
   name: string;
@@ -12,12 +15,16 @@ interface Contact {
 }
 
 export default function ContactManagementScreen() {
-  const [contacts, setContacts] = useState<Contact[]>([
-    { name: 'Alice', trustScore: 95, verified: true },
-    { name: 'Bob', trustScore: 88, verified: true },
-    { name: 'Charlie', trustScore: 60, verified: false },
-  ]);
-  const router = useRouter();
+  const contacts = useSelector((state: RootState) => state.contact.contacts);
+  const dispatch = useDispatch();
+
+  const handleAddContact = () => {
+    dispatch(addContact({ name: 'New Contact', trustScore: 75, verified: false }));
+  };
+
+  const handleVerifyContact = (name: string) => {
+    dispatch(verifyContact(name));
+  };
 
   const renderContact = (contact: Contact) => (
     <View key={contact.name} style={styles.contactItem}>
@@ -25,10 +32,11 @@ export default function ContactManagementScreen() {
         <Text style={styles.contactName}>{contact.name}</Text>
         <Text style={styles.trustScore}>Trust Score: {contact.trustScore}%</Text>
       </View>
-      <Ionicons 
-        name={contact.verified ? "checkmark-circle" : "alert-circle"} 
-        size={24} 
+      <Ionicons
+        name={contact.verified ? "checkmark-circle" : "alert-circle"}
+        size={24}
         color={contact.verified ? "#4CAF50" : "#FFA000"}
+        onPress={() => handleVerifyContact(contact.name)}
       />
     </View>
   );
@@ -41,19 +49,11 @@ export default function ContactManagementScreen() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Contact Management</Text>
-        
+
         {contacts.map(renderContact)}
-        
-        <Pressable style={styles.button} onPress={() => console.log('Add New Contact')}>
+
+        <Pressable style={styles.button} onPress={handleAddContact}>
           <Text style={styles.buttonText}>Add New Contact</Text>
-        </Pressable>
-        
-        <Pressable style={styles.button} onPress={() => console.log('Verify Contact')}>
-          <Text style={styles.buttonText}>Verify Contact</Text>
-        </Pressable>
-        
-        <Pressable style={styles.button} onPress={() => console.log('Anonymous Introduction')}>
-          <Text style={styles.buttonText}>Anonymous Introduction</Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>

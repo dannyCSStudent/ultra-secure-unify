@@ -1,4 +1,6 @@
-// app/phone-number-entry.tsx
+// app/screens/otp.tsx ---> app/verify/[phone].tsx
+// this is the second screen: enter your phone number screen  
+// enter your phone number screen ---> verify your phone number screen
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';

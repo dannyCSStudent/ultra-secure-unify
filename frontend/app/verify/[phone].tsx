@@ -1,3 +1,7 @@
+// app/verify/[phone].tsx ---> app/screens/generate_secure_id.tsx
+// this is the third screen: verify your number screen -- no redux toolkit
+// verify your number screen ---> generate your secure id screen
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -13,7 +17,7 @@ export default function PhoneVerificationScreen() {
     // Here you would typically verify the code with your backend
     // For now, we'll just simulate a successful verification
     console.log('Verification code:', verificationCode);
-    // Navigate to the next screen (e.g., dashboard or profile setup)
+    // Navigate to the next screen
     router.push('../screens/generate_secure_id');
   };
 

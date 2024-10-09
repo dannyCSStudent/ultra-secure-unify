@@ -1,4 +1,6 @@
-// app/index.tsx
+// app/index.tsx ---> app/screens/otp.tsx
+// this is the first screen: welcome screen -- No Redux Toolkit 
+// welcome screen ---> enter your phone number screen
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { Link, useRouter } from 'expo-router';

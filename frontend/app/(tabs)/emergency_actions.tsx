@@ -1,15 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store'; 
+import { toggleDeadManSwitch } from '../../store/slices/emergencySlice'; // Redux slice action
 
 export default function EmergencyActionsScreen() {
-  const [deadManSwitch, setDeadManSwitch] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+  
+  // Get state from Redux
+  const deadManSwitch = useSelector((state: RootState) => state.emergency.deadManSwitch);
+  const emergencyContacts = useSelector((state: RootState) => state.emergency.contacts);
 
-  const toggleDeadManSwitch = () => setDeadManSwitch(!deadManSwitch);
+  const handleToggleDeadManSwitch = () => {
+    dispatch(toggleDeadManSwitch());
+  };
+
+  const handleAccountLockdown = () => {
+    console.log('Immediate Account Lockdown');
+    // Add actual logic for account lockdown if needed
+  };
+
+  const handleActivateDuress = () => {
+    console.log('Activate Duress Password');
+    // Add actual logic for duress password activation if needed
+  };
+
+  const handleEditEmergencyContacts = () => {
+    router.push('/edit-emergency-contacts');
+    // Navigate to the edit contacts page
+  };
 
   return (
     <LinearGradient
@@ -20,11 +43,17 @@ export default function EmergencyActionsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Emergency Actions</Text>
         
-        <Pressable style={[styles.button, styles.lockdownButton]} onPress={() => console.log('Immediate Account Lockdown')}>
+        <Pressable
+          style={[styles.button, styles.lockdownButton]}
+          onPress={handleAccountLockdown}
+        >
           <Text style={styles.buttonText}>Immediate Account Lockdown</Text>
         </Pressable>
         
-        <Pressable style={[styles.button, styles.duressButton]} onPress={() => console.log('Activate Duress Password')}>
+        <Pressable
+          style={[styles.button, styles.duressButton]}
+          onPress={handleActivateDuress}
+        >
           <Text style={styles.buttonText}>Activate Duress Password</Text>
         </Pressable>
         
@@ -32,7 +61,7 @@ export default function EmergencyActionsScreen() {
           <Text style={styles.switchText}>Enable Dead Man's Switch</Text>
           <Switch
             value={deadManSwitch}
-            onValueChange={toggleDeadManSwitch}
+            onValueChange={handleToggleDeadManSwitch}
             trackColor={{ false: "#767577", true: "#4CAF50" }}
             thumbColor={deadManSwitch ? "#f4f3f4" : "#f4f3f4"}
           />
@@ -40,11 +69,17 @@ export default function EmergencyActionsScreen() {
         
         <View style={styles.emergencyContactsContainer}>
           <Text style={styles.sectionTitle}>Emergency Contacts</Text>
-          <Text style={styles.contactText}>Alice: +1 (555) 123-4567</Text>
-          <Text style={styles.contactText}>Bob: +1 (555) 987-6543</Text>
+          {emergencyContacts.map((contact, index) => (
+            <Text key={index} style={styles.contactText}>
+              {contact.name}: {contact.phone}
+            </Text>
+          ))}
         </View>
         
-        <Pressable style={styles.button} onPress={() => router.push('/edit-emergency-contacts')}>
+        <Pressable
+          style={styles.button}
+          onPress={handleEditEmergencyContacts}
+        >
           <Text style={styles.buttonText}>Edit Emergency Contacts</Text>
         </Pressable>
       </ScrollView>
