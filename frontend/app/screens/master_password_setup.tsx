@@ -1,3 +1,7 @@
+// app/screens/master_password.tsx ---> app/(tabs)/dashboard.tsx
+// this is the fifth screen: set your master password screen
+// set your master password screen ---> securty dashboard screen
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, Switch } from 'react-native';
 import { useRouter } from 'expo-router';

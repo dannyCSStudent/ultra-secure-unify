@@ -1,3 +1,7 @@
+// app/(tabs)/dashboard.tsx ---> select from tabs
+// this is the sixth screen: security dashboard screen
+// securty dashboard screen ---> 
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';

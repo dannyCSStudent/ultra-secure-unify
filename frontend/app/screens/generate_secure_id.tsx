@@ -1,24 +1,37 @@
-import React, { useState, useEffect } from 'react';
+// app/screens/generate_secure_id.tsx ---> app/screens/master_password.tsx
+// this is the fourth screen: generate your secure id screen -- no redux toolkit
+// generate your secure id screen ---> set your master password screen
+
+// this screen requires a forward mechism forward arrow
+
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';  // Adjust path accordingly
+import { startGeneration, completeGeneration } from '../../store/slices/secureIdSlice';
 
 export default function GenerateSecureIDScreen() {
-  const [isGenerating, setIsGenerating] = useState(true);
+  const dispatch = useDispatch();
   const router = useRouter();
+  
+  const { isGenerating, generated } = useSelector((state: RootState) => state.secureId);
 
   useEffect(() => {
+    // Start the generation process
+    dispatch(startGeneration());
+
     // Simulate the secure ID generation process
     const timer = setTimeout(() => {
-      setIsGenerating(false);
-      // Navigate to the next screen (e.g., master password setup)
+      dispatch(completeGeneration());
       router.push('../screens/master_password_setup');
-    }, 5000); // Adjust the time as needed
+    }, 5000);  // Adjust time as needed
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch, router]);
 
   return (
     <LinearGradient

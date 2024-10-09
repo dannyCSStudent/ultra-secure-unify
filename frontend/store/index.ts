@@ -4,6 +4,9 @@ import chatReducer from './slices/chatSlice';
 import securityReducer from './slices/securitySlice';
 import callReducer from './slices/callSlice';
 import privacyReducer from './slices/privacySlice'
+import secureIdReducer from './slices/secureIdSlice'; 
+import contactReducer from './slices/contactSlice'; 
+import emergencyReducer from './slices/emergencySlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +15,9 @@ export const store = configureStore({
     security: securityReducer,
     call: callReducer,
     privacy: privacyReducer,
+    secureId: secureIdReducer, 
+    contact: contactReducer,
+    emergency: emergencyReducer,
   },
 });
 
