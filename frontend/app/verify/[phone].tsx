@@ -2,28 +2,30 @@
 // this is the third screen: verify your number screen -- no redux toolkit
 // verify your number screen ---> generate your secure id screen
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 export default function PhoneVerificationScreen() {
-  const [verificationCode, setVerificationCode] = useState('');
   const { phone } = useLocalSearchParams();
   const router = useRouter();
+  const { proof } = useSelector((state: RootState) => state.security);
 
-  const handleVerify = () => {
-    // Here you would typically verify the code with your backend
-    // For now, we'll just simulate a successful verification
-    console.log('Verification code:', verificationCode);
-    // Navigate to the next screen
-    router.push('../screens/generate_secure_id');
-  };
+  const handleVerify = async () => {
+    try {
+      // In a real implementation, you might want to re-verify the proof here
+      // or perform additional checks
 
-  const handleResendCode = () => {
-    // Here you would typically resend the verification code
-    console.log('Resending verification code');
+      // For now, we'll just assume the proof is still valid
+      router.push('../screens/generate_secure_id');
+    } catch (error) {
+      console.error('Error during verification:', error);
+      // Handle error (e.g., show an error message to the user)
+    }
   };
 
   return (
@@ -33,33 +35,16 @@ export default function PhoneVerificationScreen() {
     >
       <StatusBar style="light" />
       <View style={styles.content}>
-        <Text style={styles.title}>Verify Your Number</Text>
-        
+        <Text style={styles.title}>Verification Successful</Text>
+       
         <Text style={styles.description}>
-          Enter the 6-digit code sent to
+          Your identity has been verified using zero-knowledge proofs.
         </Text>
         <Text style={styles.phoneNumber}>{phone}</Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="______"
-          placeholderTextColor="#a0a0a0"
-          value={verificationCode}
-          onChangeText={setVerificationCode}
-          keyboardType="number-pad"
-          maxLength={6}
-        />
-        
+       
         <Pressable style={styles.button} onPress={handleVerify}>
-          <Text style={styles.buttonText}>Verify</Text>
+          <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
-
-        <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn't receive the code?</Text>
-          <Pressable onPress={handleResendCode}>
-            <Text style={styles.resendLink}>Resend Code</Text>
-          </Pressable>
-        </View>
       </View>
     </LinearGradient>
   );

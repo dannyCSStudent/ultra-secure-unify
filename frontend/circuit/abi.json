@@ -1,0 +1,22 @@
+{
+  "inputs": [
+    {
+      "name": "phoneHash",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "passwordHash",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "publicPhoneHash",
+      "public": true,
+      "type": "field"
+    }
+  ],
+  "output": {
+    "type": "field"
+  }
+}

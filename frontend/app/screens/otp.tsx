@@ -7,20 +7,49 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { useDispatch } from 'react-redux';
-import { setPhoneNumber } from '../../store/slices/securitySlice';
-// decide to use Redux if the state (like the phone number) needs to be accessed globally across multiple screens or components. If not, managing it locally with useState in individual screens is sufficient.
+import { setPhoneNumber, setProof } from '../../store/slices/securitySlice';
+import { generateProof, serializeProof } from '../zkpUtils';
 
 export default function PhoneNumberEntryScreen() {
   const [phoneNumber, setPhoneNumberLocal] = useState('');
+  const [password, setPassword] = useState(''); // New state for password
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleSendVerificationCode = () => {
-    dispatch(setPhoneNumber(phoneNumber));
-    // Here you would typically send the verification code to the phone number
-    // For now, we'll just navigate to the next screen
-    
-    router.push(`/verify/${encodeURIComponent(phoneNumber)}`);
+  const handleSendVerificationCode = async () => {
+    try {
+      // Generate ZKP
+      const { proof, publicSignals } = await generateProof(phoneNumber, password);
+      const serializedProof = serializeProof(proof);
+
+      dispatch(setPhoneNumber(phoneNumber));
+      dispatch(setProof(serializedProof));
+
+      const response = await fetch('http://127.0.0.1:8080/authenticate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          phone_number: phoneNumber,
+          proof: serializedProof,
+          public_signals: publicSignals
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Authentication failed');
+      }
+
+      const data = await response.json();
+      // Store the authentication token securely
+      // For example, you might use a secure storage solution like react-native-keychain
+
+      router.push(`/verify/${encodeURIComponent(phoneNumber)}`);
+    } catch (error) {
+      console.error('Error during authentication:', error);
+      // Handle error (e.g., show an error message to the user)
+    }
   };
 
   return (
@@ -30,8 +59,8 @@ export default function PhoneNumberEntryScreen() {
     >
       <StatusBar style="light" />
       <View style={styles.content}>
-        <Text style={styles.title}>Enter Your Phone Number</Text>
-        
+        <Text style={styles.title}>Enter Your Phone Number and Password</Text>
+       
         <TextInput
           style={styles.input}
           placeholder="+1 (___) ___-____"
@@ -40,17 +69,26 @@ export default function PhoneNumberEntryScreen() {
           onChangeText={setPhoneNumberLocal}
           keyboardType="phone-pad"
         />
-        
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#a0a0a0"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+       
         <Text style={styles.description}>
-          We'll send a verification code to this number
+          We'll use this information to securely authenticate you
         </Text>
-        
+       
         <Pressable style={styles.button} onPress={handleSendVerificationCode}>
-          <Text style={styles.buttonText}>Send Verification Code</Text>
+          <Text style={styles.buttonText}>Authenticate</Text>
         </Pressable>
 
         <Text style={styles.footer}>
-          Your number is only used for verification{'\n'}and will not be stored or shared
+          Your information is securely processed and not stored
         </Text>
       </View>
     </LinearGradient>
