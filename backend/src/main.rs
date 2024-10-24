@@ -49,15 +49,17 @@ struct AuthResponse {
 }
 
 async fn authenticate(req: web::Json<AuthRequest>) -> impl Responder {
-    // In a real implementation, you would:
-    // 1. Deserialize the proof
-    // 2. Verify the proof against the known public parameters
-    // 3. If valid, generate a secure session token
+    // Load verification key
+    let verification_key = load_verification_key()?;
     
-    // For demonstration, we'll just return a dummy token
-    let token = generate_secure_token();
-    
-    HttpResponse::Ok().json(AuthResponse { token })
+    // Verify the proof
+    match verify_proof(&verification_key, &req.proof) {
+        Ok(true) => {
+            let token = generate_secure_token();
+            HttpResponse::Ok().json(AuthResponse { token })
+        },
+        _ => HttpResponse::Unauthorized().finish()
+    }
 }
 
 fn generate_secure_token() -> String {
