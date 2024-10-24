@@ -1,7 +1,3 @@
-// app/verify/[phone].tsx ---> app/screens/generate_secure_id.tsx
-// this is the third screen: verify your number screen -- no redux toolkit
-// verify your number screen ---> generate your secure id screen
-
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -13,18 +9,38 @@ import { RootState } from '../../store';
 export default function PhoneVerificationScreen() {
   const { phone } = useLocalSearchParams();
   const router = useRouter();
-  const { proof } = useSelector((state: RootState) => state.security);
+  
+  // Access proofData from Redux state
+  const proofData = useSelector((state: RootState) => state.security.proofData);
 
   const handleVerify = async () => {
     try {
-      // In a real implementation, you might want to re-verify the proof here
-      // or perform additional checks
+      // Ensure proofData is not null before proceeding
+      if (!proofData) {
+        throw new Error('Proof data is missing');
+      }
 
-      // For now, we'll just assume the proof is still valid
+      // Send to backend for verification
+      const response = await fetch('http://localhost:8080/authenticate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone_number: phone,
+          proof: proofData.proof,  // Destructured to avoid undefined access
+          public_signals: proofData.publicSignals,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Verification failed');
+      }
+
+      // On success, continue to secure ID screen
       router.push('../screens/generate_secure_id');
     } catch (error) {
       console.error('Error during verification:', error);
-      // Handle error (e.g., show an error message to the user)
     }
   };
 
@@ -36,12 +52,12 @@ export default function PhoneVerificationScreen() {
       <StatusBar style="light" />
       <View style={styles.content}>
         <Text style={styles.title}>Verification Successful</Text>
-       
+
         <Text style={styles.description}>
           Your identity has been verified using zero-knowledge proofs.
         </Text>
         <Text style={styles.phoneNumber}>{phone}</Text>
-       
+
         <Pressable style={styles.button} onPress={handleVerify}>
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
@@ -77,16 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#ffffff',
-    width: '80%',
-    padding: 15,
-    borderRadius: 10,
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 10,
   },
   button: {
     backgroundColor: '#4CAF50',
