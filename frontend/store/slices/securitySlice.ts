@@ -1,22 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface ProofData {
-  proof: string;
-  publicSignals: string;
-}
-
 interface SecurityState {
   masterPassword: string | null;
   enableBiometric: boolean;
   phoneNumber: string | null;
-  proofData: ProofData | null;  // Updated to handle object instead of just a string
+  proof: string | null;
+  publicSignals: string | null; // New property for publicSignals
 }
 
 const initialState: SecurityState = {
   masterPassword: null,
   enableBiometric: false,
   phoneNumber: null,
-  proofData: null,  // Updated to initialize as null
+  proof: null,
+  publicSignals: null, // Initialize publicSignals in the state
 };
 
 const securitySlice = createSlice({
@@ -32,11 +29,14 @@ const securitySlice = createSlice({
     setPhoneNumber: (state, action: PayloadAction<string>) => {
       state.phoneNumber = action.payload;
     },
-    setProofData: (state, action: PayloadAction<ProofData>) => {  // Updated to handle proofData
-      state.proofData = action.payload;
+    setProof: (state, action: PayloadAction<string>) => {
+      state.proof = action.payload;
+    },
+    setPublicSignals: (state, action: PayloadAction<string>) => { // New reducer for publicSignals
+      state.publicSignals = action.payload;
     },
   },
 });
 
-export const { setMasterPassword, toggleBiometricLogin, setPhoneNumber, setProofData } = securitySlice.actions;
+export const { setMasterPassword, toggleBiometricLogin, setPhoneNumber, setProof, setPublicSignals } = securitySlice.actions;
 export default securitySlice.reducer;
